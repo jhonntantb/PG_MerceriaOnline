@@ -35,3 +35,9 @@ export const removePrice = (productId) => {
         return dispatch({ type: TYPES.REMOVE_PRICE, payload: productId})
     }
 }
+
+export const clearCart = () => {
+    return async (dispatch) => {
+        return dispatch({ type: TYPES.CLEAR_CART})
+    }
+}

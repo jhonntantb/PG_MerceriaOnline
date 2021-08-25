@@ -104,13 +104,13 @@ router.put("/:id",async (req,res,next) => {
       // Busco orden a actualizar  
       const order=await Order.findByPk(req.params.id, {include:[{model: Order_Product}] })
       
-      // Elimino registros actuales de productos dela orden
-      const resultado  = await Order_Product.destroy({where:{orderId:req.params.id}})
       // Agrego registros actualizados de productos d ela orden y computo el costo total
       var total = 0;
       var promisesAux = []
       if(req.body.products) {
-
+          // Elimino registros actuales de productos dela orden
+          const resultado  = await Order_Product.destroy({where:{orderId:req.params.id}})
+          
           req.body.products.forEach(async (e) => {
               promisesAux.push( order.addProducts(e.productId, {through: {quantity: e.quantity, unitprice: e.unitprice}}))
               total = total + (e.quantity * e.unitprice);

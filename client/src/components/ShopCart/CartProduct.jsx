@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateOrder } from "../../redux/actions/order/index"
-import { getCart, addPrice, removePrice, setLoading } from "../../redux/actions/cart";
+import { getCart, addPrice, removePrice, setLoading, clearCart } from "../../redux/actions/cart";
 import "./CartProduct.css";
 import Swal from "sweetalert2";
 
@@ -14,6 +14,7 @@ export default function CartProduct({ content }) {
   const loading = useSelector(state => state.cartReducer.loading)
   const cart = useSelector(state => state.cartReducer.cart);
   const user = useSelector(state => state.userReducer.user);
+  const prices = useSelector(state => state.cartReducer.prices)
   
   //setea las cantidades iniciales
   useEffect(() => {
@@ -61,13 +62,7 @@ export default function CartProduct({ content }) {
         .then(() => dispatch(setLoading(false)))//se habilitan los botones
       }
     }
-    else
-    {
-      //actualiza el local storage con las nuevas cantidades
-      let arr = cart.cartProducts.map((e) => (e.id == content.id ? { ...e, cant: cant } : e));
-      localStorage.setItem("cart", JSON.stringify(arr));
-      dispatch(getCart())
-    }
+    
   }, [cant]);
 
   //envia un nuevo objeto precio con el valor actualizado
@@ -95,8 +90,8 @@ export default function CartProduct({ content }) {
           orderProducts = orderProducts.map(e => {
             return {
               productId: e.id,
-              unitprice: Number(e.price),
-              quantity: Number(e.Order_Product.quantity)
+              unitprice: parseInt(e.price),
+              quantity: parseInt(e.Order_Product.quantity)
             }
           })
           //mapea a un formato valido y envia el dispatch
@@ -108,17 +103,15 @@ export default function CartProduct({ content }) {
           ))
           .then(() => {
             dispatch(removePrice(content.id))
-            dispatch(getCart(user.id))
+            setTimeout(()=>{
+              dispatch(getCart(user.id))
+              if(prices.length===0) {
+                dispatch(clearCart())
+              }
+            }, 600)
           })
         }
-        else
-        {
-          dispatch(removePrice(content.id))
-          //filtra el producto a borrar y setea el local storage
-          let arr = cart.cartProducts.filter((e) => e.id != content.id);
-          localStorage.setItem("cart", JSON.stringify(arr))
-          dispatch(getCart())
-        }
+
       }
     });
   };

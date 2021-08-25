@@ -32,9 +32,21 @@ function CardProduct(props) {
       title: "¡Enhorabuena!",
       text: "El producto se agrego correctamente",
       showConfirmButton: false,
-      timer: 1500,
+      timer: 1000,
     });
   };
+
+  const productAlert = () => {
+    Swal.fire({
+      icon: "error",
+      title: "Opss...",
+      text: "El producto ya se encuentra en el carrito",
+      showConfirmButton: false,
+      timer: 1000,
+    });
+  };
+
+
 
   const addWishList = () => {
     Swal.fire({
@@ -42,7 +54,7 @@ function CardProduct(props) {
       title: "Perfecto!",
       text: "El producto se agrego correctamente a tu wishlist",
       showConfirmButton: false,
-      timer: 1300,
+      timer: 1000,
     });
   };
 
@@ -60,41 +72,45 @@ function CardProduct(props) {
   const handleAddCart = () => {
 
     if (user.id) {
-        
-        const prod = {
-          productId: props.id,
-          unitprice: Number(props.price),
-          quantity: 1
-        }
+      
+      const prod = [{
+        productId: props.id,
+        unitprice: parseInt(props.price),
+        quantity: 1
+      }]
+      console.log("este es el producto que voy a mandar " , prod)
 
         if(cart.order!=null)
         {
   
-                if(cart.cartProducts.find(e => e.id == prod.productId))
-                  {alert("El producto ya esta agregado al carrito");}
+                if(cart.cartProducts.find(e => e.id == prod[0].productId))
+                  {productAlert()}
                 else
                     { 
                       console.log("entro al update")
                       const orderProducts = cart.cartProducts.map(e => {
                         return {
                           productId: e.id,
-                          unitprice: Number(e.price),
-                          quantity: Number(e.Order_Product.quantity)
+                          unitprice: parseInt(e.price),
+                          quantity: parseInt(e.Order_Product.quantity)
                         }
                       })
                       dispatch(updateOrder(cart.order.id,
                         {...cart.order, products: orderProducts.concat(prod)}
                       ))
-                      .then(() => dispatch(getCart(user.id)))
-            
-                      setAdd(true);
-                      sweetAlert();
+                      .then(() => {
+                        setTimeout(()=>{
+                          dispatch(getCart(user.id))
+                          setAdd(true);
+                          sweetAlert();
+
+                        }, 600)
+
+                      })
                     }
-            
-        
         }
        else
-        {
+        { console.log("con este producto se creara la orden, " , prod)
         dispatch(createOrder({
             status: "cart",
             home_address: "",
@@ -105,12 +121,17 @@ function CardProduct(props) {
             postal_code: "0000",
             phone_number: "0000000000",
             userId: user.id,
-            products: [prod]
+            products: prod
           }))
-          .then(() => dispatch(getCart(user.id)))
-  
-          setAdd(true);
-          sweetAlert();
+          .then(() => {
+            setTimeout(()=>{
+              dispatch(getCart(user.id))
+              setAdd(true);
+              sweetAlert();
+
+            }, 600)
+
+          })
         }
         
     }else {

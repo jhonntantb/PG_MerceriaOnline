@@ -106,7 +106,7 @@ function Order() {
                 onClick={(e) => handleStatus(e)}
                 value={"cart"}
               >
-                Carro
+                Carrito
               </button>
             </div>
             <div id="buttoncategory" className="mx-2 my-2">
@@ -115,7 +115,7 @@ function Order() {
                 onClick={(e) => handleStatus(e)}
                 value={"checkout"}
               >
-                Pagado
+                Checkout
               </button>
             </div>
             <div id="buttoncategory" className="mx-2 my-2">
@@ -124,7 +124,7 @@ function Order() {
                 onClick={(e) => handleStatus(e)}
                 value={"cancelled"}
               >
-                Cancelado
+                Canceladas
               </button>
             </div>
             <div id="buttoncategory" className="mx-2 my-2">
@@ -133,7 +133,7 @@ function Order() {
                 onClick={(e) => handleStatus(e)}
                 value={"delivered"}
               >
-                Entregado
+                Entregadas
               </button>
             </div>
             <div id="buttoncategory" className="mx-2 my-2">
@@ -142,7 +142,7 @@ function Order() {
                 onClick={(e) => handleStatus(e)}
                 value={"approved"}
               >
-                Aprovado
+                Aprobadas
               </button>
             </div>
             <div id="buttoncategory" className="mx-2 my-2">
@@ -151,7 +151,7 @@ function Order() {
                 onClick={(e) => handleStatus(e)}
                 value={"rejected"}
               >
-                Rechazado
+                Rechazadas
               </button>
             </div>
           </div>

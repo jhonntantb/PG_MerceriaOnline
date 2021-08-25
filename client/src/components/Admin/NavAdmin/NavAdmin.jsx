@@ -54,15 +54,7 @@ function NavAdmin() {
                 Ordenes
               </NavLink>
             </li>
-            {/* <li class="nav-item">
-              <NavLink
-                activeClassName="text-dark"
-                className="dropdown-item"
-                to="#"
-              >
-                Review
-              </NavLink>
-            </li> */}
+        
             <li className="nav-item">
               <NavLink
                 activeClassName="text-dark"

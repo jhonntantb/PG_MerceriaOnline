@@ -44,11 +44,11 @@ export default function Wishlist() {
               return (
                 <>
                   <CardProduct
-                    title={wish.product.title}
-                    price={wish.product.price}
-                    url={wish.product.productimages[0].image_url}
-                    id={wish.product.id}
-                    stock={wish.product.stocks[0].quantity}
+                    title={wish.product?.title}
+                    price={wish.product?.price}
+                    url={wish.product?.productimages[0].image_url}
+                    id={wish.product?.id}
+                    stock={wish.product?.stocks[0].quantity}
                   />
                   <Scroll />
                 </>
