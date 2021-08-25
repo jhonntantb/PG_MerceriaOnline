@@ -19,7 +19,6 @@ export const updateUser = (params) => {
 export const getUser = (id) => {
     return async  (dispatch) => {
         const res = await axios.get('http://localhost:3001/user/' + id)
-        console.log("res.data en el reducer: " , res.data)
         return dispatch({ type: TYPES.GET_USER, payload: res.data })
     }
 }

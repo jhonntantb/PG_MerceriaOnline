@@ -23,7 +23,7 @@ const orderReducer = (state = initialState, action) => {
             ...state,
             order: action.payload
         }
-        case TYPES.UPDATE_ORDER: return state
+        case TYPES.UPDATE_ORDER: return {...state, order: action.payload}
         case TYPES.DELETE_ORDER: return state
 
         case TYPES.GET_ORDER_FROM_USER: return {...state, order:action.payload}

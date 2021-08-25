@@ -11,7 +11,7 @@ import {ShowCartCant} from './ShowCartCant';
 import { getAllOrder } from '../../redux/actions/order';
 import { useHistory } from 'react-router';
 import { getUser } from './../../redux/actions/user/index';
-
+import { getCart } from '../../redux/actions/cart';
 
 const Navbar = () => {
 
@@ -25,6 +25,7 @@ const Navbar = () => {
   useEffect(() => {
     if (localUserId != 'guest') {
       dispatch(getUser(localUserId))
+      // dispatch(getCart(localUserId))
   }
   },[])
   
@@ -60,7 +61,8 @@ const Navbar = () => {
        
         <div className="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
           <ul className="navbar-nav ml-10  ">
-            <li className="nav-item mx-3">
+            
+   {/*          <li className="nav-item mx-3">
               <NavLink
                 activeClassName="text-white"
                 className="nav-link"
@@ -68,7 +70,8 @@ const Navbar = () => {
               >
                 Búsqueda AC
               </NavLink>
-            </li>
+            </li> */}
+
          {/* { <li className="nav-item mx-3">
               <NavLink activeClassName="text-white" className="nav-link" to="/productlist" onClick={() => dispatch(getAllProduct())} >
                 Acerca de 

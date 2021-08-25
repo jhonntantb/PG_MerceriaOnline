@@ -175,8 +175,8 @@ function Order() {
                   <tbody>
                     <tr>
                       <td>{e.id}</td>
-                      <td>{"hola"}</td>
-                      <td>{"hola@jaja.com"}</td>
+                      <td>{e.user.user_name}</td>
+                      <td>{e.user.email}</td>
                       <td>{e.total_price}</td>
                       <td>{e.status}</td>
                       <td>{e.date}</td>

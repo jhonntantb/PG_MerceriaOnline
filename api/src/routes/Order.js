@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const axios = require('axios')
+const axios = require('axios');
 const { Order, User, Product, Order_Product, Office, Stock, Productimage } = require('../db')
 
 
@@ -109,22 +109,26 @@ router.put("/:id",async (req,res,next) => {
       // Agrego registros actualizados de productos d ela orden y computo el costo total
       var total = 0;
       var promisesAux = []
-      req.body.products.forEach(async (e) => {
-          promisesAux.push( order.addProducts(e.productId, {through: {quantity: e.quantity, unitprice: e.unitprice}}))
-          total = total + (e.quantity * e.unitprice);
-      })
+      if(req.body.products) {
+
+          req.body.products.forEach(async (e) => {
+              promisesAux.push( order.addProducts(e.productId, {through: {quantity: e.quantity, unitprice: e.unitprice}}))
+              total = total + (e.quantity * e.unitprice);
+          })
+      }
       await Promise.all(promisesAux)
 
-      order.status= req.body.status
-      order.total_price= total
-      order.home_address= req.body.home_address,
-      order.location= req.body.location,
-      order.province= req.body.province,
-      order.country= req.body.country,
-      order.delivery_date= req.body.delivery_date,
-      order.userId= req.body.userId
-      order.phone_number= req.body.phone_number
-      order.postal_code=req.body.postal_code
+      if(req.body.status) order.status= req.body.status;
+      if(req.body.products) order.total_price= total;
+      if(req.body.home_address) order.home_address= req.body.home_address;
+      if(req.body.location) order.location= req.body.location;
+      if(req.body.province) order.province= req.body.province;
+      if(req.body.country) order.country= req.body.country;
+      if(req.body.delivery_date) order.delivery_date= req.body.delivery_date;
+      if(req.body.phone_number) order.phone_number= req.body.phone_number;
+      if(req.body.postal_code) order.postal_code=req.body.postal_code;
+      
+      
       const saved_order = await order.save() 
 
       res.send(saved_order);
@@ -189,9 +193,10 @@ router.put('/:id/:Status', async (req, res) => {
 //solo puede deletear el admin
 router.delete("/:id",async (req, res) => {
     try {
-        await Order.destroy({where:{id:req.params.id}})
+        await Order.destroy({where:{id: req.params.id}})
         res.sendStatus(200)
-    } catch (error) {
+    } 
+    catch (error) {
         next(error)
     }
 })

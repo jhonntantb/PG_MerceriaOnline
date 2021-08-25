@@ -220,7 +220,7 @@ router.get("/stock/:productId", async (req, res, next) => {
 
   console.log("esto es product dentro de mailing low stock: ", product)
 
-  html = `<div>
+  html = `<div >
   <h1>Estimado Aministrador:</h1>
   <p>Le informamos que el producto ${product.title} , con numero de catalogo ${product.catalog_id} se encuentra con stock minimo o sin stock</p>
   <br/>

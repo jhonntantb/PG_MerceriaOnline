@@ -1,5 +1,8 @@
 //Cart
 export const GET_CART = "get_cart"
+export const ADD_PRICE = "add_price"
+export const REMOVE_PRICE = "remove_price"
+export const SET_LOADING = "set_loading"
 
 //Login
 export const LOG_IN_USER = "log_in_user"
@@ -12,6 +15,8 @@ export const UPDATE_PRODUCT = "update_product"
 export const DELETE_PRODUCT = "get_product"
 export const PRODUCT_CATEGORY="product_by_category"
 export const RESET_PRODUCT = "reset_product"
+export const GET_SOME_PRODUCT = "get_some_product"
+export const RESET_PRODUCTS = "reset_products"
 
 
 //User

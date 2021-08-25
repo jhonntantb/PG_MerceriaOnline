@@ -1,7 +1,9 @@
 import * as TYPES from "../types";
 
 const initialState = {
-    cart: [],
+    cart: {order: null, cartProducts: []},
+    loading: false,
+    prices: [],
   };
 
 const cartReducer = (state = initialState, action) => {
@@ -10,7 +12,23 @@ const cartReducer = (state = initialState, action) => {
             ...state,
             cart: action.payload
         }
-        
+        case TYPES.ADD_PRICE: return {
+            ...state,
+            prices: (state.prices.find(price => price.id == action.payload.id)) ?
+                    state.prices.map(price =>
+                        price.id == action.payload.id ? action.payload : price
+                    )
+                :
+                    [...state.prices, action.payload]
+        }
+        case TYPES.REMOVE_PRICE: return {
+            ...state,
+            prices: state.prices.filter(p => p.id != action.payload)
+        }
+        case TYPES.SET_LOADING: return {
+            ...state,
+            loading: action.payload
+        }
         default:                  return state;
     }
 }

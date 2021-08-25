@@ -41,7 +41,7 @@ function Shopping() {
     setHistory(true);
   };
   return (
-    <div className="container-fluid shop">
+    <div style={{marginTop: "10%"}} className="container-fluid shop">
       <br />
       <br />
       <div>

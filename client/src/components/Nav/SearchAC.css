@@ -4,6 +4,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-top: 200;
   }
   
   .auto-container {
@@ -11,7 +12,7 @@
     justify-content: center;
     align-items: center;
     width: 200px;
-  }
+   }
   
    
   #auto {
@@ -35,8 +36,12 @@
     border-color: goldenrod;
     background-color: whitesmoke;
     right: 10px;
-    top: 52px;
+    top: 70px;
     width: 770px;
+    height: 600px;
+    margin-left: 40px;
+    overflow: auto;
+
   }
   
   .option {

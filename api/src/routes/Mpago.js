@@ -19,8 +19,8 @@ router.post('/:userId', async (req, res) => {
     const itemsAcomprar = products.map(item => {
         return {
             title: item.title,
-            unit_price: Number(item.price - (item.price * (item.discount / 100))),
-            quantity: Number(item.quantity)
+            unit_price: parseInt(item.price - (item.price * (item.discount / 100))),
+            quantity: parseInt(item.quantity)
         };
     });
 

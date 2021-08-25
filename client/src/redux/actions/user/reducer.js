@@ -3,8 +3,7 @@ import * as TYPES from "../types";
 const initialState = {
     user: 'guest',
     users: [],
-    
-  };
+};
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) { 

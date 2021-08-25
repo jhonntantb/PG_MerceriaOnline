@@ -1,33 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import { getCart } from "../../redux/actions/cart/index";
 import { NavLink } from "react-router-dom";
 import { deleteWishlist } from "../../redux/actions/wishlist/index";
 import { createWishlist } from "../../redux/actions/wishlist/index";
-import "./CardProduct.css";
 import { getWishlist } from "../../redux/actions/wishlist/index";
+import { updateOrder, createOrder } from "../../redux/actions/order/index"
 import "./CardProduct.css";
 import Swal from "sweetalert2";
 
 function CardProduct(props) {
+  const history = useHistory();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cartReducer.cart);
   const user = useSelector((state) => state.userReducer.user);
   const wishlist = useSelector((state) => state.wishlistReducer.wishlist);
   const [Fav, addFav] = useState(false);
-  useEffect(
-    () => (user.id ? dispatch(getCart(user.id)) : dispatch(getCart())),
-    []
-  );
-  const [add, setAdd] = useState(
-    cart.find((prod) => props.id == prod.id) ? true : false
-  );
+  const [add, setAdd] = useState(false);
 
-  useEffect(
-    () => (user.id ? dispatch(getCart(user.id)) : dispatch(getCart())),
-    []
-  );
-  const handleAdd = () => {
+  // useEffect(() => {
+  //   if(cart.order)
+  //     setAdd(cart.cartProducts.find((prod) => props.id == prod.id) ? true : false)
+  //   else
+  //       setAdd(cart.cartProducts.find((prod) => props.id == prod.id) ? true : false)
+  // }, [cart])
+
+  const sweetAlert = () => {
     Swal.fire({
       icon: "success",
       title: "¡Enhorabuena!",
@@ -57,29 +56,70 @@ function CardProduct(props) {
       else addFav(false);
     }
   }, [wishlist]);
-  const handleAddCart = () => {
-    const prod = {
-      id: props.id,
-      title: props.title,
-      price: props.price,
-      cant: 1,
-      img: props.url,
-    };
-    handleAdd();
 
-    if (cart) {
-      if (cart.find((e) => e.id == prod.id))
-        alert("El producto ya esta agregado al carrito");
-      else {
-        localStorage.setItem("cart", JSON.stringify([...cart, prod]));
-        setAdd(true);
-      }
-    } else {
-      localStorage.setItem("cart", JSON.stringify([prod]));
+  const handleAddCart = () => {
+
+    if (user.id) {
+        
+        const prod = {
+          productId: props.id,
+          unitprice: Number(props.price),
+          quantity: 1
+        }
+
+        if(cart.order!=null)
+        {
+  
+                if(cart.cartProducts.find(e => e.id == prod.productId))
+                  {alert("El producto ya esta agregado al carrito");}
+                else
+                    { 
+                      console.log("entro al update")
+                      const orderProducts = cart.cartProducts.map(e => {
+                        return {
+                          productId: e.id,
+                          unitprice: Number(e.price),
+                          quantity: Number(e.Order_Product.quantity)
+                        }
+                      })
+                      dispatch(updateOrder(cart.order.id,
+                        {...cart.order, products: orderProducts.concat(prod)}
+                      ))
+                      .then(() => dispatch(getCart(user.id)))
+            
+                      setAdd(true);
+                      sweetAlert();
+                    }
+            
+        
+        }
+       else
+        {
+        dispatch(createOrder({
+            status: "cart",
+            home_address: "",
+            location: "",
+            total_price: 0,
+            province: "",
+            country: "Argentina",
+            postal_code: "0000",
+            phone_number: "0000000000",
+            userId: user.id,
+            products: [prod]
+          }))
+          .then(() => dispatch(getCart(user.id)))
+  
+          setAdd(true);
+          sweetAlert();
+        }
+        
+    }else {
+      alert("por favor, ingresa para seguir comprando")
+      history.push("/signin")
     }
 
-    user.id ? dispatch(getCart(user.id)) : dispatch(getCart());
-  };
+  }
+
   const handleSubmit = (e) => {
     console.log(typeof e.target.value);
     if (e.target.value == "true") {
@@ -113,25 +153,7 @@ function CardProduct(props) {
       }
     }
   };
-  // return (
-  //       <div class="card" >
-  //         <div class="text-center p-4">
-  //           <img id="main-image" src={props.url} width="300" />
-  //         </div>
-  //         <div class="about text-center">
-  //           <NavLink style={{ textDecoration: 'none', color: "black"}} to={`/product/${props.id}`}>
-  //               <h6>{props.title}</h6>
-  //           </NavLink>
-  //           <span>${props.price}</span>
-  //          {props.stock > 0 && <h6>Stock Disponible </h6> }
-  //         </div>
-  //         <div class="cart-button mt-3 px-2 d-flex justify-content-around align-items-center">
-  //           <button class="btn btn-dark text-uppercase " disabled={add} onClick={handleAddCart}>Añadir al carro</button>
-  //           <div class="add">
-  //   user.id ? dispatch(getCart(user.id)) : dispatch(getCart());
-  //   handleAdd();
-  // };
-
+  
   return (
     <div className="card mt-5">
       <div className="about text-center">
@@ -156,7 +178,7 @@ function CardProduct(props) {
           disabled={add}
           onClick={handleAddCart}
         >
-          Añadir al carro
+          Añadir al carrito
         </button>
         {user.id ? (
           <div class="add">
@@ -173,9 +195,6 @@ function CardProduct(props) {
         ) : null}
       </div>
     </div>
-    //         </div>
-    //   </div>
-    // </div>
   );
 }
 

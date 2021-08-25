@@ -4,7 +4,8 @@ import { useDispatch } from "react-redux";
 import { getAllProduct } from "../../redux/actions/product/index.js";
 import { SetCategoriesFiltradas } from "../../redux/actions/category/index.js";
 import { getAllCategory } from "../../redux/actions/category/index.js";
-import { getCart } from "../../redux/actions/cart/index";
+import { getCart } from "../../redux/actions/cart/index"
+import { getAllOrder } from "../../redux/actions/order/index"
 import "./ProductList.css";
 import CardProduct from "./CardProduct.jsx";
 import { getWishlist } from "../../redux/actions/wishlist/index.js";
@@ -25,10 +26,14 @@ function ProductList() {
   const [Maximo, setMaximo] = useState("");
   const [orden, setOrden] = useState("A-Z");
   useEffect(() => {
+    console.log('useEffect list productlist: ',list)
     !list.length && dispatch(getAllProduct());
     dispatch(getAllCategory());
-    dispatch(getWishlist(id));
-    user.id ? dispatch(getCart(user.id)) : dispatch(getCart());
+    dispatch(getWishlist(id))
+    if(user.id)
+      dispatch(getAllOrder(user.id, "cart"))
+    else
+      dispatch(getCart())
   }, []);
 
   var lista_filtrada = [];
@@ -139,8 +144,8 @@ function ProductList() {
   });
   
   useEffect(() => {
-    console.log("esto es lista filtrada",lista_filtrada)
-    console.log("pages*10",pages)
+    //console.log("esto es lista filtrada",lista_filtrada)
+    //console.log("pages*10",pages)
     if(lista_filtrada.length<((pages.length)*10)){
       setCurrentPage(1)
     }
@@ -223,7 +228,6 @@ function ProductList() {
         <div className="col-md-9">
           {currentItems && currentItems.length > 0 ? (
             currentItems.map((e) => {
-              console.log(e);
               return (
                 <>
                   <span key={e.id} className="card-deck   mx-1">
@@ -246,7 +250,6 @@ function ProductList() {
           )}
         </div>
       </div>
-
       <ul className="pageNumbers">
         <li>
           <button

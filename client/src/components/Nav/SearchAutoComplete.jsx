@@ -2,12 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { getAllProduct } from "../../redux/actions/product/index.js";
+import { getSomeProduct } from "../../redux/actions/product/index.js";
 import "./SearchAC.css";
 
 const Auto = () => {
     const [display, setDisplay] = useState(false);
     const [options, setOptions] = useState([]);
     const [search, setSearch] = useState("");
+    const [filtrada, setFiltrada] = useState([]);
     const wrapperRef = useRef(null);
 
     const dispatch = useDispatch();
@@ -16,19 +18,25 @@ const Auto = () => {
 
     useEffect(() => {
         const list = [];
-        dispatch(getAllProduct('','alfa'));
+        dispatch(getAllProduct('','alfa')).then(() => {
+        console.log('Use effect inicio Productos: ',products)    
         products.map(e => list.push({title: e.title + " (" + e.catalog_id + ")", id: e.id}))
+        })
+        console.log('Lista: ', list)
+        console.log('products: ',products);
         setOptions(list);
+        setFiltrada(list);
         console.log('Options: ',options);
       },[]);
 
+     
       useEffect(() => {
           document.addEventListener('mousedown', handleClickOutside);
           return () => {
               document.removeEventListener("mousedown", handleClickOutside);
           }
       },[]);
-
+ 
       const handleClickOutside = event => {
           const {current: wrap} = wrapperRef;
           if (wrap && !wrap.contains(event.target)) {
@@ -37,16 +45,32 @@ const Auto = () => {
 
           }
       }
+ 
 
+      const handleChange = (event) => {
+          setSearch(event.target.value);
+           setDisplay(true);
+          var tempFiltrada = options.filter(({title}) => title.toLowerCase().includes(search.toLowerCase()) );
+          setFiltrada(tempFiltrada)
+      
+      };
+
+      const handleClickSearch = () => {
+       dispatch(getSomeProduct(filtrada));
+       push('/productlist')
+       //alert('aprete boton de buscar');
+      }
 
       const setTexto = (texto, id) => {
           setSearch(texto);
           setDisplay(false);
-          console.log('Eligio texto: ' ,texto);
           push(`/product/${id}`);
-          
+       }
 
-      }
+       const handleSetDisplay = () => {
+           setDisplay(!display);
+           
+       }
     
     return (
         <div ref={wrapperRef} className="flex-container flex-column pos-rel">
@@ -54,13 +78,14 @@ const Auto = () => {
             id="auto" 
             onClick={() => setDisplay(!display)} 
             placeholder="Escriba para buscar"
+            autoComplete="off"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(e) => handleChange(e)}
             />
+            <button onClick={() => handleClickSearch()}>Buscar  </button>
           {display && (
               <div className="autoContainer">
-                  {options.filter(({title}) => title.toLowerCase().includes(search.toLowerCase()) )
-                  .map((v,i) => {
+                 { filtrada.map((v,i) => {
                       return (
                         <div 
                           onClick={() => setTexto(v.title, v.id)} 
@@ -84,6 +109,9 @@ const Auto = () => {
 function SearchAutoComplete() {
     return (
         <div className="SearchAutoComplete">
+            <br></br>
+            <br></br>
+            <br></br>
             <h1>Autocomplete de Productos</h1>
             <div className="auto-container">   
               <Auto />
@@ -97,3 +125,5 @@ export default SearchAutoComplete;
 //  {options.filter(({title}) => title.indexOf(search.toLowerCase()) > -1 )
 
 // //props.history.push(`/product/${addProduct.catalog_id}`);
+
+//  onChange={(event) => setSearch(event.target.value)}

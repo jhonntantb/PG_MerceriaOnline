@@ -1,28 +1,77 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCart } from "../../redux/actions/cart";
+import { updateOrder } from "../../redux/actions/order/index"
+import { getCart, addPrice, removePrice, setLoading } from "../../redux/actions/cart";
 import "./CartProduct.css";
 import Swal from "sweetalert2";
 
-export default function CartProduct({ content, addPrice, removePrice }) {
+export default function CartProduct({ content }) {
+  const maxCant = content.stock ? content.stock : content.stocks[0].quantity
   const dispatch = useDispatch();
-  const [cant, setCant] = useState(content.cant);
+  const [initCant, setInitCant] = useState(1);
+  const [cant, setCant] = useState(1);
   const [localPrice, setLocalPrice] = useState(content.price);
-  const cart = useSelector((state) => state.cartReducer.cart);
-
+  const loading = useSelector(state => state.cartReducer.loading)
+  const cart = useSelector(state => state.cartReducer.cart);
+  const user = useSelector(state => state.userReducer.user);
+  
+  //setea las cantidades iniciales
   useEffect(() => {
-    setLocalPrice(content.price * cant);
-    var arr = cart.map((e) => (e.id == content.id ? { ...e, cant: cant } : e));
+    if(cart.order)
+    {
+      setCant(content.Order_Product.quantity)
+      setInitCant(content.Order_Product.quantity)
+    }
+    else
+    {
+      setCant(content.cant)
+      setInitCant(content.cant)
+    }
+      
+  }, [cart]);
 
-    localStorage.setItem("cart", JSON.stringify(arr));
-    //agrego dispatch y actualizo el store
-    dispatch(getCart())
+  //manejo de cambio de cantidades
+  useEffect(() => {
+    //setea el precio local con el precio * cantidad
+    setLocalPrice(content.price * cant);
+
+    //verifica si el usuario esta logueado validando si se trae o no una orden en el carrito
+    if(cart.order)
+    {
+      //detecta si hubo un cambio en las cantidades
+      if(initCant != cant)
+      {
+        //se setea loading a true para evitar prosibles conflictos durante el proceso
+        dispatch(setLoading(true))
+        const products = cart.cartProducts.map(e => {
+          return {
+            productId: e.id,
+            unitprice: Number(e.price),
+            quantity: Number(e.id == content.id ? cant : e.Order_Product.quantity)
+          }
+        })
+        
+        dispatch(updateOrder(
+          cart.order.id,
+          {...cart.order, products: products}
+        ))
+        .then(() => {
+          return dispatch(getCart(user.id))//se actualiza el carrito
+        })
+        .then(() => dispatch(setLoading(false)))//se habilitan los botones
+      }
+    }
+    else
+    {
+      //actualiza el local storage con las nuevas cantidades
+      let arr = cart.cartProducts.map((e) => (e.id == content.id ? { ...e, cant: cant } : e));
+      localStorage.setItem("cart", JSON.stringify(arr));
+      dispatch(getCart())
+    }
   }, [cant]);
 
-  useEffect(
-    () => addPrice({ id: content.id, value: localPrice }),
-    [localPrice]
-  );
+  //envia un nuevo objeto precio con el valor actualizado
+  useEffect(() => dispatch(addPrice({ id: content.id, value: localPrice })), [localPrice]);
   
   const removeAlert = () => {
     Swal.fire({
@@ -35,32 +84,70 @@ export default function CartProduct({ content, addPrice, removePrice }) {
       confirmButtonText: "Si, Borrar!",
       cancelButtonText: "Cancelar",
       allowOutsideClick: false
-    }).then((result) => {
+    }).then(result => {
       if (result.isConfirmed) {
-        removePrice(content.id)
-        var arr = cart.filter((e) => e.id != content.id);
-        localStorage.setItem("cart", JSON.stringify(arr));
-        dispatch(getCart());
+        
+
+        if(user.id)
+        {
+          //filtra el producto a borrar
+          var orderProducts = cart.cartProducts.filter(e => e.id != content.id)
+          orderProducts = orderProducts.map(e => {
+            return {
+              productId: e.id,
+              unitprice: Number(e.price),
+              quantity: Number(e.Order_Product.quantity)
+            }
+          })
+          //mapea a un formato valido y envia el dispatch
+          dispatch(updateOrder(cart.order.id,
+            {
+              ...cart.order, 
+              products: orderProducts
+            }
+          ))
+          .then(() => {
+            dispatch(removePrice(content.id))
+            dispatch(getCart(user.id))
+          })
+        }
+        else
+        {
+          dispatch(removePrice(content.id))
+          //filtra el producto a borrar y setea el local storage
+          let arr = cart.cartProducts.filter((e) => e.id != content.id);
+          localStorage.setItem("cart", JSON.stringify(arr))
+          dispatch(getCart())
+        }
       }
     });
   };
+  
+  //maneja elc ambio de cantidades
+  const handleCant = (e) => {
+    if(e.target.value > maxCant) setCant(maxCant)
+    else if(e.target.value < 1) setCant(1)
+    else setCant(parseInt(e.target.value))
+  }
+
+  //botones de suma y resta de cantidad
   const handleSum = () => {
-    setCant(cant + 1);
+    setCant(cant >= maxCant ? cant : cant + 1);
   };
 
   const handleRes = () => {
-    setCant(cant - 1);
+    setCant(cant <= 1 ? cant : cant - 1);
   };
-
+  console.log("carrito")
+  console.log(cart)
   return (
     <div class="container-fluid pb-5 mt-n2 mt-md-n3">
       <div class="row">
         <div class="col-xl-12 col-md-8 col-sm-12">
-          {/*<!-- Item-->*/}
           <div class="d-sm-flex justify-content-between my-4 pb-4 border-bottom">
             <div class="media d-block d-sm-flex text-center text-sm-left">
               <a class="cart-item-thumb mx-auto mr-sm-4" href="#">
-                <img src={content.img} alt="Product" />
+                <img src={content.productimages ? content.productimages[0].image_url : content.url} alt="Product" />
               </a>
               <div class="media-body pt-3 align-text-center">
                 <h3 class="product-card-title font-weight-semibold border-0 pb-0 mx-5">
@@ -68,7 +155,7 @@ export default function CartProduct({ content, addPrice, removePrice }) {
                 </h3>
                 <br />
                 <span class="font-size-lg text-primary pt-5">
-                  $ {content.price}
+                  $ {localPrice}
                 </span>
               </div>
             </div>
@@ -81,24 +168,25 @@ export default function CartProduct({ content, addPrice, removePrice }) {
 
                 <input
                   class="form-control form-control-sm text-center"
-                  onChange={(e) => setCant(e.target.value)}
+                  onChange={handleCant}
                   type="number"
                   id="quantity1"
                   value={cant}
                   style={{ fontSize: "18px", fontWeight: "bold" }}
+                  disabled={true}
                 />
                 <div className="mt-3">
                   <button
                     className="btn btn-outline-dark btnmore"
-                    value={cant}
                     onClick={handleSum}
+                    disabled={loading}
                   >
                     +
                   </button>
                   <button
                     className="btn btn-outline-dark btnless"
-                    value={cant}
                     onClick={handleRes}
+                    disabled={loading}
                   >
                     -
                   </button>
@@ -130,67 +218,6 @@ export default function CartProduct({ content, addPrice, removePrice }) {
               </button>
             </div>
           </div>
-          {/*<div class="pt-4">
-                <div class="accordion" id="cart-accordion">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="accordion-heading font-weight-semibold"><a href="#promocode" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="promocode">Apply promo code<span class="accordion-indicator"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg></span></a></h3>
-                        </div>
-                        <div class="collapse show" id="promocode" data-parent="#cart-accordion">
-                            <div class="card-body">
-                                <form class="needs-validation" novalidate="">
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" id="cart-promocode" placeholder="Promo code" required="">
-                                        <div class="invalid-feedback">Please provide a valid promo code!</div>
-                                    </div>
-                                    <button class="btn btn-outline-primary btn-block" type="submit">Apply promo code</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="accordion-heading font-weight-semibold"><a class="collapsed" href="#shipping" role="button" data-toggle="collapse" aria-expanded="true" aria-controls="shipping">Shipping estimates<span class="accordion-indicator"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg></span></a></h3>
-                        </div>
-                        <div class="collapse" id="shipping" data-parent="#cart-accordion">
-                            <div class="card-body">
-                                <form class="needs-validation" novalidate="">
-                                    <div class="form-group">
-                                        <select class="form-control custom-select" required="">
-                                            <option value="">Choose your country</option>
-                                            <option value="Australia">Australia</option>
-                                            <option value="Belgium">Belgium</option>
-                                            <option value="Canada">Canada</option>
-                                            <option value="Finland">Finland</option>
-                                            <option value="Mexico">Mexico</option>
-                                            <option value="New Zealand">New Zealand</option>
-                                            <option value="Switzerland">Switzerland</option>
-                                            <option value="United States">United States</option>
-                                        </select>
-                                        <div class="invalid-feedback">Please choose your country!</div>
-                                    </div>
-                                    <div class="form-group">
-                                        <select class="form-control custom-select" required="">
-                                            <option value="">Choose your city</option>
-                                            <option value="Bern">Bern</option>
-                                            <option value="Brussels">Brussels</option>
-                                            <option value="Canberra">Canberra</option>
-                                            <option value="Helsinki">Helsinki</option>
-                                            <option value="Mexico City">Mexico City</option>
-                                            <option value="Ottawa">Ottawa</option>
-                                            <option value="Washington D.C.">Washington D.C.</option>
-                                            <option value="Wellington">Wellington</option>
-                                        </select>
-                                        <div class="invalid-feedback">Please choose your city!</div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" placeholder="ZIP / Postal code" required="">
-                                        <div class="invalid-feedback">Please provide a valid zip!</div>
-                                    </div>
-                                    <button class="btn btn-outline-primary btn-block" type="submit">Calculate shipping</button>
-                                </form>
-                            </div>
-                        </div>*/}
         </div>
       </div>
     </div>

@@ -20,10 +20,16 @@ export const getProduct = (id) => {
 export const getAllProduct = (search='', order='') => {
         return async  (dispatch) => {
         const res = await axios.get(`http://localhost:3001/product?name=${search}&order=${order}`)
-        console.log('valor res:', res)
+        console.log('Action getAllProduct valor res:', res)
         return dispatch({ type: TYPES.GET_ALL_PRODUCT, payload: res.data })
     }
 }
+
+export const getSomeProduct = (arr=[]) => {
+    console.log('get some product aqui estoy');
+    return { type: TYPES.GET_SOME_PRODUCT, payload: arr }
+}
+
 
 
 export const updateProduct = (params) => {
@@ -51,4 +57,10 @@ export const resetProduct = () => {
     type: TYPES.RESET_PRODUCT
     }
   };
+
+  export const resetProducts = () => {
+    return {
+    type: TYPES.RESET_PRODUCTS
+    }
+  };  
 

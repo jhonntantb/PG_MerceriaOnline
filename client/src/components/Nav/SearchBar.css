@@ -1,7 +1,7 @@
 .search {
   position: relative;
   box-shadow: 0 0 40px rgba(51, 51, 51, 0.1);
-  width: 100%;
+ 
   margin-left: 3rem;
 }
 
@@ -9,6 +9,7 @@
   height: 60px;
   text-indent: 15px;
   border: 2px solid #d6d4d4;
+  width: 770px;
 }
 
 .search input:focus {

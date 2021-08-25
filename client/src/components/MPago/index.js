@@ -1,14 +1,14 @@
 import { goToCheckout } from '../../redux/actions/checkout/index';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { createOrder, getAllOrder } from '../../redux/actions/order/index';
+import { updateOrder } from '../../redux/actions/order/index';
 import "./index.css"
 
 function CreateCheckoutButton ({products, direction}) {
   const dispatch = useDispatch()
   const user = useSelector(state => state.userReducer.user)
-  // const dbOrder = useSelector(state => state.orderReducer.orders)
-  const createdOrder = useSelector(state => state.orderReducer.order)
+  const updatedOrder = useSelector(state => state.orderReducer.order)
+  const order = useSelector(state => state.cartReducer.cart.order)
   const mpData = useSelector(state => state.checkoutReducer.MP_data)
 
   const [loading, setLoading] = useState(true)
@@ -16,85 +16,40 @@ function CreateCheckoutButton ({products, direction}) {
   const productsToMP = products.map(p => {
     return {
       title: p.id,
-      price: p.price,
+      price: p.unitprice,
       discount: 0,
-      quantity: p.cant
+      quantity: p.quantity
     }
   })
 
-  const productsToDB = products.map(p => {
-    return {
-      productId: p.id,
-      unitprice: Number(p.price),
-      quantity: Number(p.cant)
-    }
-  })
 
   useEffect(() => {
-   if(createdOrder.length===0) {
-    let totalPrice = 0;
-    for(let i=0; i< products.length; i++) {
-      totalPrice = totalPrice + (products[i].price * products[i].cant)
-    }
-    dispatch(createOrder({
-      status: "checkout",
-      home_address: direction.home_address,
-      location: direction.location,
-      total_price: totalPrice,
-      province: direction.province,
-      country: user.country,
-      postal_code: direction.postal_code,
-      phone_number: direction.phone_number,
-      userId: user.id,
-      products: productsToDB
-    }))}
+    
+      let totalPrice = 0;
+      
+      for(let i=0; i< products.length; i++) {
+        totalPrice = totalPrice + (products[i].price * products[i].cant)
+      }
+
+      dispatch(updateOrder( order.id , 
+        {
+        status: "checkout",
+        home_address: direction.home_address,
+        location: direction.location,
+        total_price: totalPrice,
+        province: direction.province,
+        country: user.country,
+        postal_code: direction.postal_code,
+        phone_number: direction.phone_number,
+        })
+      )
     
   }, [])
 
-  // useEffect(() => {
-  //   var total = products.reduce((acum, e) => acum += (e.price * e.cant));
-
-  //   (dbOrder.length > 0) && dispatch(createOrder({
-  //     status: "checkout",
-  //     home_address: direction.home_address,
-  //     location: direction.location,
-  //     total_price: total,
-  //     province: direction.province,
-  //     country: user.country,
-  //     postal_code: direction.postal_code,
-  //     phone_number: direction.phone_number,
-  //     userId: user.id,
-  //     products: productsToDB
-  //   }))
-    
-  // }, [dbOrder])
-
-  // useEffect(() => {
-  //   user.id && dispatch(getAllOrder(user.id, "checkout"))
-  // }, [])
-
-  // useEffect(() => {
-  //   var total = products.reduce((acum, e) => acum += (e.price * e.cant));
-
-  //   (dbOrder.length > 0) && dispatch(createOrder({
-  //     status: "checkout",
-  //     home_address: direction.home_address,
-  //     location: direction.location,
-  //     total_price: total,
-  //     province: direction.province,
-  //     country: user.country,
-  //     postal_code: direction.postal_code,
-  //     phone_number: direction.phone_number,
-  //     userId: user.id,
-  //     products: productsToDB
-  //   }))
-    
-  // }, [dbOrder])
-
-  useEffect(() => {createdOrder.id && dispatch(goToCheckout(user.id, productsToMP))}, [createdOrder])
+  useEffect(() => {updatedOrder.id && dispatch(goToCheckout(user.id, productsToMP))}, [updatedOrder])
 
   useEffect(() => {
-    if(mpData&&loading) {
+    if(mpData && loading) {
         var script = document.createElement("script");
         script.src = "https://www.mercadopago.com.ar/integrations/v1/web-payment-checkout.js";
         script.type = "text/javascript";

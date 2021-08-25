@@ -28,5 +28,9 @@ module.exports = (sequelize) => {
       type: DataTypes.BIGINT,
       allowNull: false,
     },
+    shift: {
+      type: DataTypes.ARRAY(DataTypes.TEXT),
+      allowNull: true,
+    }
   });
 }
