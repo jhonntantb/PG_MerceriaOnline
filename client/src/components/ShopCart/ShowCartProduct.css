@@ -41,3 +41,7 @@
 .font-weight-semibold {
   font-weight: 600 !important;
 }
+
+.font-size-sm {
+  color: #222;
+}

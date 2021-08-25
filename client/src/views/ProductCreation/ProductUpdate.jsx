@@ -15,7 +15,7 @@ function ProductUpdate(props) {
   const admin = localStorage.getItem("admin");
 
   const product = useSelector((state) => state.productReducer.product);
-  //console.log(product);
+
 
   const dispatch = useDispatch();
 
@@ -49,25 +49,22 @@ function ProductUpdate(props) {
     office: stockOfficeId,
   };
 
-  // console.log("productCategories: " , product.categories)
-
   const [addProduct, setaddProduct] = useState(local_initial_state);
-  // setInputCategories(product.categories)
+
   const handleAlert = () => {
     Swal.fire({
       icon: "success",
       title: "¡Enhorabuena!",
       text: "El producto se actualizo correctamente",
       showConfirmButton: true,
-      
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
- 
+
     if (
-      addProduct.title != "" &&
+      addProduct.title !== "" &&
       addProduct.resume !== "" &&
       addProduct.detail !== "" &&
       addProduct.price !== "" &&
@@ -80,7 +77,6 @@ function ProductUpdate(props) {
       dispatch(getAllProduct());
       handleAlert();
       props.history.push("/productlist");
-      //props.history.push(`/product/${addProduct.catalog_id}`);
     } else {
 
       Swal.fire({
@@ -103,7 +99,7 @@ function ProductUpdate(props) {
     var aux = [categorySelected];
 
     if (!e.target.checked) {
-      let filtered = inputCategories.filter((e) => e != categorySelected);
+      let filtered = inputCategories.filter((e) => e !== categorySelected);
       setInputCategories(filtered);
     } else {
       setInputCategories(inputCategories.concat(aux));
@@ -111,15 +107,13 @@ function ProductUpdate(props) {
   }
 
   function renderCategories() {
-    
+
     return (
       <div>
-        {" "}
         Categorias
         {storeCategories.map((c, i) => {
-          
-          let preCat = product.categories.find( e=> e.id == c.id)
-          if (preCat!==undefined) {
+          let preCat = product.categories.find(e => e.id === c.id)
+          if (preCat !== undefined) {
             return (
               <div>
                 <input
@@ -134,7 +128,7 @@ function ProductUpdate(props) {
                 <br />
               </div>
             );
-          }else {
+          } else {
             return (
               <div>
                 <input
@@ -160,10 +154,8 @@ function ProductUpdate(props) {
   }
 
   function renderOffices() {
-    //console.log('store offices tiene : ' , Object.keys(storeOffices))
     return (
       <div>
-        {" "}
         Sucursal
         {
           <select onChange={(e) => selectOffice(e)}>
@@ -196,16 +188,12 @@ function ProductUpdate(props) {
     if (storeOffices.length > 0) setInputOffice(storeOffices[0].id);
   }, [storeOffices]);
 
-  useEffect(()=>{
-    console.log("product.productimages tiene: " , product.productimages)
-    
-      let auxStoreImages=[]
-      product.productimages.forEach(pi => auxStoreImages.push(pi.image_url))
-      console.log("auxStoreImages tiene: " , auxStoreImages)
-      setStoreImages(auxStoreImages)
-      console.log("storeImages ahora tiene: " , storeImages);
-    
-  },[product])
+  useEffect(() => {
+
+    let auxStoreImages = []
+    product.productimages.forEach(pi => auxStoreImages.push(pi.image_url))
+    setStoreImages(auxStoreImages)
+  }, [product])
 
   return admin !== "null" ? (
     <div className="container">
@@ -275,16 +263,11 @@ function ProductUpdate(props) {
           <p>{`Catalogo:  ${addProduct.catalog_id}`}</p>
         </div>
         {renderOffices()}
-        {product.categories? renderCategories():<p>...loading</p>}
+        {product.categories ? renderCategories() : <p>...loading</p>}
         <ReactFirebaseFileUpload
           storeImages={storeImages}
           setStoreImages={setStoreImages}
         />
-        {/* {storeImages.length > 0
-          ? storeImages.forEach((url) => {
-              return <p>{url}</p>;
-            })
-          : null} */}
         <button
           disabled={storeImages.length > 0 ? false : true}
           className="buttonupdate"

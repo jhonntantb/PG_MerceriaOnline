@@ -2,10 +2,7 @@ import React, { useState, useEffect } from "react";
 import {useHistory} from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { getAllCategory } from "../../redux/actions/category";
-import {
-  createProduct,
-  getAllProduct,
-} from "../../redux/actions/product";
+import {createProduct,getAllProduct,} from "../../redux/actions/product";
 import { getAllOffice } from "../../redux/actions/office";
 import ReactFirebaseFileUpload from "../../components/FileUploader/FileUploader";
 import "./ProductCreation.css";
@@ -55,24 +52,14 @@ const ProductCreation = (props) => {
   
 
   useEffect(() => {
-   // dispatch(resetProduct());
     dispatch(getAllProduct());
   }, []);
 
-  // useEffect(() => {
-  // if(product.length>0){alert('Numero de catalogo ya existe')}
-  // }, [product]);
-
- // useEffect(() => {
- //   dispatch(getProduct(addProduct.catalog_id));
- // }, [catalog]);
-
   const handleSubmit = (e) => {
     e.preventDefault();
-   // setCatalog(addProduct.catalog_id);
     var exist = false;
     for(let i=0; i<products.length; i++){
-      if(products[i].catalog_id == addProduct.catalog_id) {
+      if(products[i].catalog_id === addProduct.catalog_id) {
       exist = true
       break
       } 
@@ -123,7 +110,7 @@ const ProductCreation = (props) => {
     var aux = [categorySelected];
 
     if (!e.target.checked) {
-      let filtered = inputCategories.filter((e) => e != categorySelected);
+      let filtered = inputCategories.filter((e) => e !== categorySelected);
       setInputCategories(filtered);
     } else {
       setInputCategories(inputCategories.concat(aux));
@@ -161,7 +148,6 @@ const ProductCreation = (props) => {
   }
 
   function renderOffices() {
-    // console.log("store offices tiene : ", Object.keys(storeOffices));
     return (
       <div>
         <span className="fs-5 mr-2">Sucursal</span>
@@ -196,15 +182,9 @@ const ProductCreation = (props) => {
     if (storeOffices.length > 0) setInputOffice(storeOffices[0].id);
   }, [storeOffices]);
 
-  // onSubmit={(e)=>handleSubmit(e)}
+
   return admin !== "null" ? (
     <div className="container">
-      {/* <nav className="navbar justify-content-start mx-3" aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href={ROUTES.ADMIN}>Admin</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Stock</li>
-                </ol>
-            </nav> */}
       <h1 className="text-center mt-3">Creación de productos</h1>
       <form>
         <p>Order: 123</p>
@@ -288,11 +268,6 @@ const ProductCreation = (props) => {
           storeImages={storeImages}
           setStoreImages={setStoreImages}
         />
-        {/* {storeImages.length > 0
-          ? storeImages.forEach((url) => {
-              return <p>{url}</p>;
-            })
-          : null} */}
         <button
           disabled={storeImages.length > 0 ? false : true}
           id="buttonproduct"

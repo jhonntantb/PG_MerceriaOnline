@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import "./CardOrder.css";
 
 function CardOrder(props) {
-  const dispatch = useDispatch();
-  const [disabled, setDisabled] = useState(false);
+
+
 
   var color = "";
   if (props.status === "approved") color = "#A0D568";
@@ -17,6 +16,7 @@ function CardOrder(props) {
   if (props.status === "cancelled") color = "##ED5564";
 
   return (
+
     <div className="cardUserOrder text-center">
       <div style={{ minHeight: "150px" }}>
         <p className="text-dark mt-2">
@@ -42,7 +42,9 @@ function CardOrder(props) {
           </NavLink>
         </div>
       </div>
+
     </div>
+
   );
 }
 

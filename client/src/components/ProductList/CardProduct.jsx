@@ -196,7 +196,7 @@ function CardProduct(props) {
       <div className="cart-button mt-3 px-2 d-flex justify-content-around align-items-center">
         <button
           className="carrito-button btn btn-dark text-uppercase "
-          disabled={add}
+          disabled={add || props.stock == 0}
           onClick={handleAddCart}
         >
           Añadir al carrito

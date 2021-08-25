@@ -30,8 +30,7 @@ export const postCategory = (name) => {
 export function deleteCategory(id) {
     return async function (dispatch) {
         try {
-            let res = await axios.delete("http://localhost:3001/category/"+ id);
-            //console.log("RES DELETE: ",res)
+            await axios.delete("http://localhost:3001/category/"+ id);
             return dispatch({type:TYPES.DELETE_CATEGORY})
         } catch (error) {
             console.log(error)

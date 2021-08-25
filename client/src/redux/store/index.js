@@ -5,9 +5,6 @@ import thunk from "redux-thunk";
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
 
 const ConfigureStore = () => {
-    
-    
-    
 
     try {
        var initialState = localStorage.getItem("pg_merceria") ? {} :localStorage.setItem("pg_merceria", "guest");

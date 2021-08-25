@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { updateOrder } from '../../redux/actions/order/index';
 import "./index.css"
 
-function CreateCheckoutButton ({products, direction}) {
+function CreateCheckoutButton({ products, direction }) {
   const dispatch = useDispatch()
   const user = useSelector(state => state.userReducer.user)
   const updatedOrder = useSelector(state => state.orderReducer.order)
@@ -12,7 +12,7 @@ function CreateCheckoutButton ({products, direction}) {
   const mpData = useSelector(state => state.checkoutReducer.MP_data)
 
   const [loading, setLoading] = useState(true)
-  
+
   const productsToMP = products.map(p => {
     return {
       title: p.id,
@@ -60,13 +60,11 @@ function CreateCheckoutButton ({products, direction}) {
         setLoading(false)
     }
   }, [mpData])
-  
+
   return (
     <div>
-
       <div className="btn btn-block rm-border" id='button-checkout' hidden={loading}></div>
-     <p className="btn btn-block rm-border" hidden={!loading}>...loading</p>
-
+      <p className="btn btn-block rm-border" hidden={!loading}>...loading</p>
     </div>)
 }
 

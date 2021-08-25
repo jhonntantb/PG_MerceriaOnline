@@ -5,7 +5,7 @@ import "./Map.css"
 
 export const Map = () => {
   return (
-    <div className="container-fluid">
+    <div style={{marginTop:"5%"}} className="container-fluid">
       <div className="page-title">
         <h2 className="title-contanct">Contactanos</h2>
       </div>
@@ -88,7 +88,7 @@ export const Map = () => {
                 <label >
                   Tu mensaje <br />
                   <span className="form-control-wrap">
-                    <textarea id="textarea1" class="form-control textarea" id="exampleFormControlTextarea1" cols="60" rows="8" aria-invalid="false" />
+                    <textarea id="textarea1" class="form-control textarea"  cols="60" rows="8" aria-invalid="false" />
                   </span>
                 </label>
               </p>

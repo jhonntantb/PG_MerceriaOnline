@@ -12,20 +12,24 @@ export default function CreateReview({ match }) {
 
  
   const [send, setsend] = useState("False");
+
   function handleSubmit(e) {
     const mostrarAlerta = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "El campo no puede quedar vacio!",
+        text: "¡El campo no puede quedar vacio!",
       });
     };
   
     if (values.description.length < 1) mostrarAlerta();
     else if (parseInt(values.score) < 1 || parseInt(values.score) > 5)
-      alert("El Valor de score esta fuera del permitido");
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "El Valor de score esta fuera del permitido",
+    })
     else {
-      console.log(values);
       dispatch(createReview(values));
       setsend("true");
     }
@@ -85,7 +89,6 @@ export default function CreateReview({ match }) {
                 setValues({ ...values, description: e.target.value });
               }}
             >
-              {" "}
             </textarea>
           </div>
           <div className="mt-2">
@@ -125,7 +128,7 @@ export default function CreateReview({ match }) {
           value="Enviar"
         />
       </form>
-      {send == "true" && alertSucces()}
+      {send === "true" && alertSucces()}
       <ReviewSeparator />
     </div>
   );

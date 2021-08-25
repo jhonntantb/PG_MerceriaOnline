@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { compose } from 'recompose';
@@ -8,13 +8,14 @@ import { sendEmailConfirmation } from '../../../redux/actions/mail/index';
 import { withFirebase } from '../../FireBase';
 import * as ROUTES from '../../../routes';
 import { validateUserName, validateUserEmail } from "./errorsControl"
-import { callCity, callCountries, callRegion } from './locationCall';
+import { callCity, callRegion } from './locationCall';
 import { Input } from 'reactstrap';
+import { NavLink } from 'react-router-dom';
 import './index.css';
+
 
 const SignUpPage = () => (
   <div>
-
     <SignUpForm />
   </div>
 );
@@ -31,7 +32,6 @@ function SignUpFormBase(props) {
 
   const storeUser = useSelector(state => state.userReducer.user)
   const dispatch = useDispatch();
-  const [countries, setCountries] = useState([]);
   const [region, setRegion] = useState([])
   const [apiCity, setApiCity] = useState([])
 
@@ -43,7 +43,7 @@ function SignUpFormBase(props) {
 
   const onSubmitHandler = async (e) => {
 
-    const { user_name, first_name, last_name, email, passwordOne, province, city, street, number } = state;
+    const { user_name, first_name, last_name, email, passwordOne, province, city, street } = state;
     e.preventDefault();
 
     try {
@@ -59,47 +59,35 @@ function SignUpFormBase(props) {
         location: city,
         active: false
       }
-
-
       if (authUser.user.uid !== undefined) {
         dispatch(createUser(userOk))
         setState({ ...initial_state })
       } else {
         throw new Error("Se produjo un Error, por favor contactar al administrador")
       }
-
     } catch (error) {
-
       setState({ ...state, error: error })
     }
   }
 
   const onChangeHandler = async (e) => {
-    console.log("cambiando la opcion: ", e.target.name)
-    console.log("que tiene el valor: ", e.target.value)
     e.preventDefault();
     setState({
       ...state,
       [e.target.name]: e.target.value
     })
-
     if (e.target.name === "user_name") {
-
       if (e.target.value.length > 3) {
         var validated = await validateUserName(e.target.value)
         setUserError(validated)
 
       } else { setUserError(false) }
     }
-
     if (e.target.name === "email") {
-
       if (e.target.value.includes("@") && e.target.value.includes(".com")) {
         var validated = await validateUserEmail(e.target.value)
         setEmailError(validated)
-        
       } else {
-
         if (e.target.value.length > 0) {
           setEmailError(true)
         } else { setEmailError(false) }
@@ -125,23 +113,17 @@ function SignUpFormBase(props) {
     }
   }, [storeUser])
 
-  
+
 
   useEffect(async () => {
-    
-      
-      var loadedRegion = await callRegion()
-      console.log("loadedRegion tiene " , loadedRegion)
-      setRegion(loadedRegion)
-      setLoading(false)
-    
-
+    var loadedRegion = await callRegion()
+    setRegion(loadedRegion)
+    setLoading(false)
   }, [])
 
   useEffect(async () => {
-    if (state.province!="") {
+    if (state.province !== "") {
       var loadedCity = await callCity(state.province)
-      console.log("loadedCity: ", loadedCity)
       setApiCity(loadedCity)
     }
   }, [state.province])
@@ -150,11 +132,9 @@ function SignUpFormBase(props) {
   return !loading ? (
     <div className="container mt-5">
       <h3 className="mb-4 text-center fs-1">Registrarse</h3>
-
       <form onSubmit={onSubmitHandler}>
         <div className="row">
           <div className="col-md-6">
-
             <div className="mb-3 mt-3">
               <label style={{ marginLeft: "3px" }}>Nombre de usuario</label>
               <input
@@ -164,7 +144,6 @@ function SignUpFormBase(props) {
                 type="text"
                 placeholder="Nombre de Usuario"
                 className="form-control"
-
               />
             </div>
             <div hidden={user_name.length > 3 || user_name.length === 0}
@@ -197,7 +176,6 @@ function SignUpFormBase(props) {
                 className="form-control"
               />
             </div>
-            
             <div className="mb-3 mt-3">
               <label style={{ marginLeft: "3px" }}>Email</label>
               <input
@@ -223,7 +201,6 @@ function SignUpFormBase(props) {
                 className="form-control"
               />
             </div>
-            
             <div className="mb-3 mt-3">
               <label style={{ marginLeft: "3px" }}>Confirmar contraseña</label>
               <input
@@ -239,11 +216,7 @@ function SignUpFormBase(props) {
               Las contraseñas deben coincidir
             </div>
           </div>
-
-
           <div className="col-md-6">
-          
-
             <div className="mb-3 mt-3 separador">
               <label style={{ marginLeft: "3px" }}>Provincia</label>
               <Input
@@ -283,20 +256,13 @@ function SignUpFormBase(props) {
                 className="form-control"
               />
             </div>
-            
           </div>
-
         </div>
-
-
         <div className="d-grip gap-2 mb-3 text-center mt-4">
           <button className="btn btn-dark btn-lg border-0 rounded-0" disabled={isInvalid || userError || emailError} type="submit">Registrarse</button>
         </div>
-
         {error && <p className='text-danger text-center'>{error.message}</p>}
-
       </form>
-
     </div>
   ) : (<h2 className="text-center text-dark mt-5">Cargando...</h2>);
 }
@@ -304,7 +270,7 @@ function SignUpFormBase(props) {
 const SignUpLink = () => {
   return (<p>
     <hr />
-    <Link className="text-dark" to={ROUTES.SIGN_UP}>crear cuenta</Link>
+    <NavLink className="text-dark" to={ROUTES.SIGN_UP}>crear cuenta</NavLink>
   </p>)
 }
 

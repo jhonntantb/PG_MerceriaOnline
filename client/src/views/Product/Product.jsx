@@ -13,6 +13,7 @@ import Scroll from "../../components/Scroll/Scroll";
 import { updateOrder, createOrder } from "../../redux/actions/order/index"
 import Swal from "sweetalert2";
 
+
 export default function Product({ match }) {
   const history= useHistory();
   const admin = localStorage.getItem("admin");
@@ -61,7 +62,7 @@ export default function Product({ match }) {
   }, []);
 
   useEffect(() => {
-    if (product.id != undefined) setLoading(false);
+    if (product.id !== undefined) setLoading(false);
   }, [product]);
 
   const handleAddCart = () => {
@@ -158,7 +159,7 @@ export default function Product({ match }) {
                   ? product.stocks[0].quantity
                   : product.stock
                   ? product.stock
-                  : "0"}{" "}
+                  : "  0"}{" "}
                 unidades
               </h4>
               <h3 className="text-dark mt-3">${product.price}</h3>
@@ -166,6 +167,7 @@ export default function Product({ match }) {
               <div >
                 <button
                   className="add-to-cart btn btn-default mt-2"
+                  disabled={product.stocks[0].quantity==0} 
                   onClick={handleAddCart}
                   style={{ marginLeft: "20px" }}
                 >
@@ -184,9 +186,13 @@ export default function Product({ match }) {
             <CreateReview match={match.params.id} />
             <ShowReviews reviews={product.reviews} />
             <Scroll />
+            
           </div>
+         
         </div>
+        
       </div>
+  
     </div>
   ) : (
     <div></div>

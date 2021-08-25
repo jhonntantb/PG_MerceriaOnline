@@ -10,8 +10,10 @@ import "./ProductList.css";
 import CardProduct from "./CardProduct.jsx";
 import { getWishlist } from "../../redux/actions/wishlist/index.js";
 import Scroll from "../Scroll/Scroll.jsx";
+import Footer from './../Footer/Footer';
+import  Swal  from 'sweetalert2';
 
-function ProductList() {
+function ProductList(props) {
   const dispatch = useDispatch();
 
   const list = useSelector((state) => state.productReducer.products);
@@ -44,11 +46,7 @@ function ProductList() {
       })
     );
   } else lista_filtrada = list;
-  //console.log(list);
-  //console.log("CATEGORY" + categoryFiltrada);
-  //console.log("lISTA_FILTRADA" + lista_filtrada);
-  //console.log(Minimo);
-  // console.log(Maximo);
+  
 
   if (Minimo != "" && Maximo != "") {
     lista_filtrada = lista_filtrada.filter((val) => {
@@ -144,19 +142,41 @@ function ProductList() {
   });
   
   useEffect(() => {
-    //console.log("esto es lista filtrada",lista_filtrada)
-    //console.log("pages*10",pages)
+    
     if(lista_filtrada.length<((pages.length)*10)){
       setCurrentPage(1)
     }
   }, [lista_filtrada])
-  // console.log(lista_filtrada)
+   
+  const noProduct = () => {
+  Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: 'Parece que no hay productos',
+    confirmButtonText: `Ok`,
+    allowOutsideClick: false,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      props.history.push("/")}})
+  }
+
+  const noProductSearch = () => {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Parece que no hay productos que coincidan con ese nombre',
+      confirmButtonText: `Ok`,
+    })
+    }
+    
+  
 
   return list.length > 0 ? (
+    <div>
     <div className="container-fluid main">
       <div className="row">
-        <div id="tableleft" className="col-md-3 mt-5">
-          <div className="justify-content-start mx-5">
+        <div id="tableleft" className="col-md-4 col-sm-12 mt-5">
+          <div className=" position-fixed  mx-5">
             <label htmlFor="categories">Filtrar por categorias</label>
             <select
               className="form-select"
@@ -168,7 +188,7 @@ function ProductList() {
             >
               <option value={categoryFiltrada}>{categoryFiltrada}</option>
               {categoryFiltrada != "Todas" && (
-                <option value="Todas">Todas</option>
+                <option  value="Todas">Todas</option>
               )}
 
               {categorias &&
@@ -225,9 +245,12 @@ function ProductList() {
             </select>
           </div>
         </div>
-        <div className="col-md-9">
+        <div className="col-md-8">
           {currentItems && currentItems.length > 0 ? (
             currentItems.map((e) => {
+              if(e.stocks[0].quantity != 0) 
+              {
+              
               return (
                 <>
                   <span key={e.id} className="card-deck   mx-1">
@@ -237,16 +260,16 @@ function ProductList() {
                       url={e.productimages[0].image_url}
                       id={e.id}
                       stock={
-                        e.stocks.length > 0 ? e.stocks[0].quantity : undefined
+                        e.stocks.length > 0 ? e.stocks[0].quantity : 0
                       }
                     />
                   </span>
                   <Scroll />
                 </>
-              );
+              )}
             })
           ) : (
-            <h3 className="text-center mt-4">No hay productos</h3>
+            <h3 className="text-center mt-4">{noProduct()}</h3>
           )}
         </div>
       </div>
@@ -270,9 +293,11 @@ function ProductList() {
         </li>
       </ul>
     </div>
+    <Footer />
+    </div>
   ) : (
     <h1 className="text-center mt-5">
-      No hay productos que coincidan con ese nombre
+      {noProductSearch()}
     </h1>
   );
 }

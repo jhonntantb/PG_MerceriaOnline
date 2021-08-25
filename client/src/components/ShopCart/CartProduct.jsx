@@ -35,6 +35,7 @@ export default function CartProduct({ content }) {
   useEffect(() => {
     //setea el precio local con el precio * cantidad
     setLocalPrice(content.price * cant);
+   
 
     //verifica si el usuario esta logueado validando si se trae o no una orden en el carrito
     if(cart.order)
@@ -139,9 +140,9 @@ export default function CartProduct({ content }) {
         <div class="col-xl-12 col-md-8 col-sm-12">
           <div class="d-sm-flex justify-content-between my-4 pb-4 border-bottom">
             <div class="media d-block d-sm-flex text-center text-sm-left">
-              <a class="cart-item-thumb mx-auto mr-sm-4" href="#">
+              <span class="cart-item-thumb mx-auto mr-sm-4">
                 <img src={content.productimages ? content.productimages[0].image_url : content.url} alt="Product" />
-              </a>
+              </span>
               <div class="media-body pt-3 align-text-center">
                 <h3 class="product-card-title font-weight-semibold border-0 pb-0 mx-5">
                   {content.title}

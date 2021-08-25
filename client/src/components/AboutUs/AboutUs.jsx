@@ -3,7 +3,7 @@ import "./AboutUs.css";
 
 const AboutUs = () => {
   return (
-    <div className="background-general">
+    <div style={{marginTop:"5%"}} className="background-general">
       <div className="container">
         <link
           href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -175,7 +175,7 @@ const AboutUs = () => {
                     </a>
                   </li>
                   <li className="list-inline-item">
-                    <a href="#" className="social-link">
+                    <a href="https://www.linkedin.com/in/jhonatan-tabraj/" className="social-link">
                       <i className="fa fa-linkedin" />
                     </a>
                   </li>

@@ -27,22 +27,22 @@ export default function AddresForm({setAddress}){
     }, [selectProv])
 
     const handleChange = (e) => {
-        if(e.target.name == "prov") setSelectProv(e.target.value)
-        if(e.target.name == "city") setSelectLoc(e.target.value)
-        if(e.target.name == "address") setDireccion(e.target.value)
-        if(e.target.name == "pais") setPais(e.target.value)
-        if(e.target.name == "cod") setCod(e.target.value.replace(/\D/g, ""))
-        if(e.target.name == "telephone") setTelephone(e.target.value.replace(/\D/g, ""))
+        if(e.target.name === "prov") setSelectProv(e.target.value)
+        if(e.target.name === "city") setSelectLoc(e.target.value)
+        if(e.target.name === "address") setDireccion(e.target.value)
+        if(e.target.name === "pais") setPais(e.target.value)
+        if(e.target.name === "cod") setCod(e.target.value.replace(/\D/g, ""))
+        if(e.target.name === "telephone") setTelephone(e.target.value.replace(/\D/g, ""))
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if(selectProv == ""){alert("No se a seleccionado una provincia"); return}
-        if(selectLoc == ""){alert("No se a seleccionado una localidad"); return}
-        if(direccion == ""){alert("Calle invalida"); return}
-        if(pais == ""){alert("No se ingresó pais"); return}
-        if(cod == ""){alert("Codigo postal requerido"); return}
-        if(telephone == ""){alert("Agregue un telefono"); return}
+        if(selectProv === ""){alert("No se a seleccionado una provincia"); return}
+        if(selectLoc === ""){alert("No se a seleccionado una localidad"); return}
+        if(direccion === ""){alert("Calle invalida"); return}
+        if(pais === ""){alert("No se ingresó pais"); return}
+        if(cod === ""){alert("Codigo postal requerido"); return}
+        if(telephone === ""){alert("Agregue un telefono"); return}
         const address = {
             province: selectProv,
             location: selectLoc,

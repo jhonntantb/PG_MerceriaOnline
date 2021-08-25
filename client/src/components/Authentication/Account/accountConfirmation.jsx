@@ -34,7 +34,7 @@ export default function AccountConfirmation(props) {
 },[])
 
  
-  function  show () {
+  function  show (props) {
     Swal.fire({
       title: '¡Gracias por registrarte!',
       showDenyButton: true,

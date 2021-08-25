@@ -12,7 +12,7 @@ export default function Review({ content }) {
     for (let i = 0; i < score; i++)
       stars.push(<span class="fa fa-star" style={checked}></span>);
 
-    if (complete != 0)
+    if (complete !== 0)
       for (let i = 0; i < complete; i++)
         stars.push(<span class="fa fa-star"></span>);
 

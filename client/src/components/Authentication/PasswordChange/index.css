@@ -34,7 +34,7 @@
     position: relative;
 }
 
-.input-text, input[type="password"] {
+.input-text, .control input {
     color: #888888;
     display: block;
     width: 100%;
@@ -46,7 +46,7 @@
     border: 0;
 }
 
-input[type="password"] {
+#password-confirmation {
 outline: none;
 border-radius: 0;
 box-shadow: none;

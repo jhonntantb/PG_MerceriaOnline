@@ -5,6 +5,7 @@ import { getWishlist } from "../../redux/actions/wishlist";
 import Swal from "sweetalert2";
 import { useHistory } from "react-router";
 import Scroll from "../../components/Scroll/Scroll";
+import Footer from "../../components/Footer/Footer";
 
 export default function Wishlist() {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ export default function Wishlist() {
 
   return (
     Ready && (
+      <div>
       <div className="container" style={{marginTop: "5%"}}>
         <h2 className="text-dark text-center mt-5">Lista de favoritos</h2>
       <div id="wishlist">
@@ -55,11 +57,16 @@ export default function Wishlist() {
               );
             })
           ) : (
+            <div>
             <h1>{noproducts()}</h1>
+           
+            </div>
           )}
         </div>
       </div>
       </div>
+      <Footer />
+    </div>
     )
   );
 }

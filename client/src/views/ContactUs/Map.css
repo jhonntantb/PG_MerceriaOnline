@@ -25,7 +25,6 @@
 }
 
 #input1 {
-    
 border: 1px solid #e5e5e5;
 border-top-width: 1px;
 border-right-width: 1px;
@@ -72,9 +71,9 @@ textarea {
 .adress.container {
     animation: wpb_rtl .7s 1 cubic-bezier(.175,.885,.32,1.275);
     clear: both;
-margin: 20px 0 0 0;
-overflow: hidden;
-float: left;
+    margin: 20px 0 0 0;
+    overflow: hidden;
+    float: left;
 }
 
 .adress-text {

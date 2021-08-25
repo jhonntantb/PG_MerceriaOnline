@@ -5,15 +5,16 @@
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
   margin-top: 2%;
   font-size: 120%;
+  width: 150%;
 }
 
-label {
+.label {
   font-size: 120%;
 }
 
-#tableleft {
+/*#tableleft {
   width: 25%;
-}
+}*/
 
 #cont-main {
   position: relative;

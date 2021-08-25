@@ -75,6 +75,7 @@ function App() {
       <Route exact path="/search_ac" component={SearchAutoComplete}/>
       <Route path={ROUTES.ADMIN_OFFICES} exact component={Office}/>
       <Route path="/user/turnero" exact component={Turnero}/>
+      <Route path={ROUTES.ABOUT_US} component={AboutUs}/>
       
     </React.Fragment>
   )
