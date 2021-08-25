@@ -1,6 +1,6 @@
 import React,{ useState,useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux"
-import { getAllOffice } from '../../../redux/actions/office'
+import { getAllOffice, updateOffice } from '../../../redux/actions/office'
 
 function ScheduleAndQuotes() {
     const dispatch = useDispatch()
@@ -47,12 +47,27 @@ function ScheduleAndQuotes() {
             setSendQuotes(sendQuotes.concat([{name:e.target.name,quote:value}]))
         }  
     }
+    //-----------------------Ordenando los Cambios--------------------------
+    const prev=sendQuotes.sort((a,b)=>{
+        if(a.name<b.name) return -1;
+        if(a.name>b.name) return 1;
+        return 0;
+    })
+    const qoutes=prev.map(e=>e.quote)
+    var changes={
+        shift:qoutes
+    }
+    const sendQuotesbyeOffice=(e)=>{
+        e.preventDefault()
+        dispatch(dispatch(updateOffice({changes:changes,id:offcieId})))
+    }
+    console.log("esto es quotes",qoutes)
     return (
         <div>
-            <h3>Esto es Quotes</h3>
+            <h3>Selecciona una Sucursal</h3>
             <div>
-                {allOffices&&allOffices.length>0&&
-                allOffices.map(e=>
+                {view&&view.length>0&&
+                view.map(e=>
                     <div key={e.id}>
                         <button id={e.id} onClick={event=>handleOffice(event)} >{e.name}</button>
                     </div>
@@ -60,8 +75,10 @@ function ScheduleAndQuotes() {
                 }
             </div>
             <br />
-            <div>
-                <h3>Turnos:</h3>
+            {showForm&&
+                <div>
+                <div>
+                <h3>Turnosa crear: </h3>
                 <br />
                 <button onClick={e=>pushInput(e)}>Agregar</button>
                 <button disabled={formInput.length===1} onClick={e=>popInput(e)}  >Quitar</button>
@@ -71,12 +88,15 @@ function ScheduleAndQuotes() {
                 <form key={e.id}  name="formulario">
                     <button disabled={true}>{e}</button>
                     {"---->"}
-                    <input type="time" name={"quote"+e} max="17:00:00" min="10:00:00" step="1" required="required" onChange={event=>handleChange(event)} onBlur={e=>hadleOnBlur(e,onchange)}/>
+                    <input type="time" name={e} max="17:00:00" min="10:00:00" step="1" required="required" onChange={event=>handleChange(event)} onBlur={e=>hadleOnBlur(e,onchange)}/>
                 </form>
                 )
                 
                 }
             </div>
+            <br />
+            <button onClick={e=>sendQuotesbyeOffice(e)} >Guardar Cambios</button>
+            </div>}
         </div>
     )
 }

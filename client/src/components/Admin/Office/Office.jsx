@@ -13,6 +13,8 @@ function Office() {
     const [renderUpdateOffice,setRenderUpdateOffice]=useState(false)
     const [renderOfficeQuote,setRenderOfficeQuote]=useState(false)
 
+    const [selectedDate,setSelectedDate] = useState(null);
+
     const allOffices = useSelector(state => state.officeReducer.offices)
 
     useEffect(() => {
@@ -53,7 +55,7 @@ function Office() {
                 {renderUpdateOffice&&<UpadateOffice/>}
             </div>
             <div>
-                {renderOfficeQuote&&<ScheduleAndQuotes /> }
+                {renderOfficeQuote&&<ScheduleAndQuotes selectedDate={selectedDate} setSelectedDate={setSelectedDate} /> }
             </div>
 
         </div>
