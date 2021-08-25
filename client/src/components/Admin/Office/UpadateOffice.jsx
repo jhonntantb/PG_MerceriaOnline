@@ -50,7 +50,7 @@ function UpadateOffice() {
             <div>
             {
                 viewOffices.length>0&&viewOffices.map(e=>
-                    <div>
+                    <div key={e.id}>
                         <p>Nombre: {e.name}</p>
                         <p>Dirección: {e.address}</p>
                         <p>Telefono: {e.phone} </p>

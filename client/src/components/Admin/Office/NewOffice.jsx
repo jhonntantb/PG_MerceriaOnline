@@ -48,7 +48,7 @@ function NewOffice() {
             <div>
                 <button onClick={e=>ShowOffices(e)}>Ver las Oficinas</button>
                 {renderOffices&& viewOffices.map(e=> 
-                <div> 
+                <div key={e.id}> 
                     <p>Nombre: {e.name}</p>
                     <p>Dirección: {e.address}</p>
                     <p>Telefono: {e.phone} </p>
