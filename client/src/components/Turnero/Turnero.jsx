@@ -2,9 +2,11 @@ import React,{ useState,useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux"
 import DatePicker from 'react-date-picker';
 import { getAllOffice } from '../../redux/actions/office/index'
+import { postSchedule } from "../../redux/actions/schedule/index"
 
 function Turnero() {
     const dispatch = useDispatch()
+    const userid = localStorage.getItem("pg_merceria");
     const [viewOffice,setViewOffice]=useState([])
     const [selectOffice,setSelectOffice]=useState(false)
     const [viewCalendary,setViewCalendary]=useState(false)
@@ -13,6 +15,11 @@ function Turnero() {
     const [quote,setQuote]=useState("")
 
     const allOffices = useSelector(state => state.officeReducer.offices)
+    const day=new Date()
+    const month=day.getMonth()
+
+    const scchedule=selectedDate + "-"+quote
+
     useEffect(() => {
         dispatch(getAllOffice())
     }, [])
@@ -27,12 +34,14 @@ function Turnero() {
     const selectOfficeId=(e)=>{
         e.preventDefault()
         const value=e.target.value
-        console.log(value)
         setOfficeId(value)
         setViewCalendary(true)
     }
     const selectQuote=(e)=>{
         setQuote(e.target.value)
+    }
+    const sendScheduleUser=(e)=>{
+        dispatch(postSchedule({schedule:scchedule,officeId:officeId,userId:userid}))
     }
     return (
         <div style={{marginTop:"20px"}}>
@@ -46,9 +55,9 @@ function Turnero() {
                 allOffices.map(ofi=>
                     <div key={ofi.codesuc}>
                         <button value={ofi.id} onClick={e=>selectOfficeId(e)}>
-                        <p>Nombre: {ofi.name}</p>
-                        <p>Dirección: {ofi.address}</p>
-                        <p>Telefono: {ofi.phone} </p>
+                            Nombre: {ofi.name}
+                            Dirección: {ofi.address}
+                            Telefono: {ofi.phone}
                         </button>
                     </div>)
                 }
@@ -62,8 +71,8 @@ function Turnero() {
                     value={selectedDate}
                     onChange={date=>setSelectedDate(date)}
                     minDate={new Date()}
-                    tileDisabled={({activeStartDate, date, view }) => date.getDay() === 0 || date.getDay() === 6 }
-                    isOpen="true"
+                    tileDisabled={({activeStartDate, date, view }) => date.getDay() === 0 || date.getDay() === 6 || date.getMonth()!== month+1 && date.getMonth()!== month}
+                    isOpen={true}
                 /> 
             </div>}
             <br />
@@ -75,12 +84,13 @@ function Turnero() {
                 {
                 <div>
                     {allOffices.find(o=>o.id===officeId)?.shift?.map(q=>
-                    <button value={q} onClick={e=>selectQuote(e)} >{q}</button>
+                    <button key={q} value={q} onClick={e=>selectQuote(e)} >{q}</button>
                     )
                     }
                 </div>
                 }
             </div>}
+           <button onClick={e=>sendScheduleUser(e)}>Confirmar Fecha</button> 
         </div>
     )
 }

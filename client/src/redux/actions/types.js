@@ -91,3 +91,10 @@ export const GO_TO_CHECKOUT = "go_to_checkout"
 export const ACCOUNT_CONFIRMATION_EMAIL = "send_confirmation_email"
 export const ORDER_STATUS_EMAIL = "order_status_email"
 export const LOW_STOCK_EMAIL = "low_stock-email"
+
+//Schedule
+export const GET_ALL_SCHEDULE = "get_all_schedule"
+export const GET_SCHEDULE = "get_schedule"
+export const CREATE_SCHEDULE = "create_schedule" 
+export const DELETE_SCHEDULE = "get_schedule"
+export const UPDATE_SCHEDULE = "update_schedule"

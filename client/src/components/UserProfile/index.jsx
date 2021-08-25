@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { getUser, updateUser } from '../../redux/actions/user'
 import PasswordChangePage from '../Authentication/PasswordChange';
+import Direction from './Direction';
 import './index.css'
 
 function Index() {
@@ -14,6 +15,7 @@ function Index() {
     //---------------------Render info----------------------------
     const [myData, setMyData] = useState(true)
     const [security, setSecurity] = useState(false)
+    const [showDirection,setShowDiretion]=useState(false)
 
     //--------------------Data User----------------------------
     const [disabledDirection, setDisabledDirection] = useState(true)
@@ -62,14 +64,21 @@ function Index() {
         e.preventDefault()
         setMyData(true)
         setSecurity(false)
+        setShowDiretion(false)
     }
     const modifyUserData = (e) => {
         e.preventDefault();
         setDisabledUser(false)
+        setShowDiretion(false)
     }
     const modifyUserDirection = (e) => {
         e.preventDefault()
         setDisabledDirection(false)
+    }
+    const showDirections=(e)=>{
+        setShowDiretion(true)
+        setMyData(false)
+        setSecurity(false)
     }
 
     const changes = {
@@ -113,13 +122,14 @@ function Index() {
                                             <ul>
                                                 <li > <button type="submit" className="items my-2" onClick={e => ShowMyData(e)}>Mis Datos</button></li>
                                                 <li > <button type="submit" className="items my-2" onClick={e => showSecurity(e)} >Seguridad</button></li>
+                                                <li > <button type="submit" className="items my-2" onClick={e => showDirections(e)} >Direcciones</button></li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="col-sm-9 grid-main px-5">
-                                {myData === true && user ?
+                                {myData === true && user &&
                                     <div className="column main">
                                         <form>
                                             <fieldset className="fieldset info">
@@ -183,7 +193,16 @@ function Index() {
                                             </div>
                                         </form>
                                     </div>
-                                    : <PasswordChangePage />}
+                                    }
+                                    {security&&
+                                    <div>
+                                    <PasswordChangePage />
+                                    </div>}
+                                    {showDirection&&
+                                        <div>
+                                            <Direction/>
+                                        </div>
+                                    }
                             </div>
                         </div>
                     </div>

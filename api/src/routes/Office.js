@@ -5,12 +5,11 @@ const router = Router();
 
 router.get("/",(_req,res,next)=>{
     //incluido el calendario
-    return Office.findAll({order: [['codesuc', 'ASC']],include:[{model:Stock}]}).then(response=>res.send(response)).catch(err=>next(err))
+    return Office.findAll({order: [['codesuc', 'ASC']],include:[{model:Stock},{model:Schedule}]}).then(response=>res.send(response)).catch(err=>next(err))
 });
 router.post("/",async(req,res,next)=>{
     const newOffice=req.body
     //const schedule=["9:00-10:00","10:00-11:00","11:00-12:00","12:00-1:00","17:00-18:00" ,"18:00-19:00", "19:00-20:00"]
-    const schedule="9:00-18:00"
     try {
         const [office,created]=await Office.findOrCreate({
             where:{address:newOffice.address},
@@ -22,15 +21,9 @@ router.post("/",async(req,res,next)=>{
                 shift: newOffice.shift
             }   
         })
-        const newSchedule=await Schedule.create({
-            date:schedule,
-            officeId: office.id
-        })
-        console.log(newSchedule)
+    
         //await office.addSchedules(newSchedule)
         res.send(office)
-        console.log(office.id)
-        console.log(created)
     } catch (error) {
         next(error)
     }
@@ -39,11 +32,6 @@ router.post("/",async(req,res,next)=>{
     } catch (error) {
         
     }
-    
-//setear el schedule
-    //en response.dataValues se encuentra la info de la officina recien creada
-    //console.log(.office.dataValues.id)//nombre oficina 
-    //const schedule=Schedule.create({})
 })
 router.put("/",async (req,res,next)=>{
     try {

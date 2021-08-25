@@ -13,11 +13,21 @@ router.post("/",async (req,res,next)=>{
     try {
         const schedule=await Schedule.create({
             date:req.body.schedule,
+            officeId: req.body.officeId,
+            userId: req.body.userId
         })
         res.send(schedule);
-        //await Schedule.setOffices(req.body.officeId)
     } catch (error) {
         next(error);
+    }
+})
+router.delete("/:id",async (req,res,next)=>{
+    console.log(req.params.id)
+    try {
+        const office=await Schedule.destroy({where:{id:req.params.id}})
+        res.sendStatus(200)
+    } catch (error) {
+        next(error)
     }
 })
 module.exports = router;
