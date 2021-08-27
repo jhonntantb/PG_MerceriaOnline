@@ -127,8 +127,18 @@ function CardProduct(props) {
         });
       }
     } else {
-      alert("por favor, ingresa para seguir comprando");
-      history.push("/signin");
+      Swal.fire({
+        icon: "error",
+        title: "Oops",
+        text: "Debes estar logueado para añadir al carrito",
+        confirmButtonColor: "#ee8589",
+        confirmButtonText: `Iniciar sesión`,
+        allowOutsideClick: true,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          history.push("/signin");
+        }
+      });
     }
   };
 
